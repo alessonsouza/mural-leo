@@ -65,22 +65,32 @@ body {
   isolation: isolate;
 }
 
-/* Emblema "Líderes Singulares AL 25/26" como marca-d'água gigante atrás do
-   título. Centralizado, com opacidade baixa para se misturar com o gradiente
-   vinho sem competir com o texto. */
+/* Emblema "Líderes Singulares AL 25/26" como decoração no canto direito do
+   hero. Fica ancorado à direita (com leve sangria pra fora da borda) e
+   centralizado verticalmente, com opacidade alta para se destacar bem. */
 .cabecalho::before {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(820px, 90vw);
+  right: -60px;
+  transform: translateY(-50%);
+  width: min(560px, 55vw);
   aspect-ratio: 1 / 1;
   background: url('/logo-al-25-26.png') no-repeat center center;
   background-size: contain;
-  opacity: 0.45;
+  opacity: 0.75;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Em telas pequenas, encolhe o emblema e centraliza atrás do texto. */
+@media (max-width: 720px) {
+  .cabecalho::before {
+    right: 50%;
+    transform: translate(50%, -50%);
+    width: 78vw;
+    opacity: 0.35;
+  }
 }
 
 .cabecalho-conteudo {
