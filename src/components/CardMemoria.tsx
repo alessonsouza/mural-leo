@@ -7,15 +7,6 @@ import type { Memoria } from '../types'
 import { ModalCompartilhar } from './ModalCompartilhar'
 import { ModalEditarMemoria } from './ModalEditarMemoria'
 
-// Formata a data (ex.: "17 de maio de 2026") no padrão brasileiro.
-function formatarData(dataISO: string): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date(dataISO))
-}
-
 interface Props {
   memoria: Memoria
   onAtualizada: (memoria: Memoria) => void
@@ -41,9 +32,6 @@ export function CardMemoria({ memoria, onAtualizada }: Props) {
 
         <footer className="card-rodape">
           <span className="card-nome">{memoria.nome}</span>
-          <time className="card-data" dateTime={memoria.criado_em}>
-            {formatarData(memoria.criado_em)}
-          </time>
         </footer>
 
         <div className="card-acoes">
