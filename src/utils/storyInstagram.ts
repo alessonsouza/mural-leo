@@ -148,14 +148,14 @@ export async function gerarStoryInstagram(memoria: Memoria): Promise<Blob> {
     }
   }
 
-  // Emblema "Líderes Singulares AL 25/26" como marca-d'água atrás de tudo.
-  // Centralizado, ocupando ~90% da largura, com opacidade média para se
-  // misturar com o gradiente vinho sem competir com o conteúdo principal.
+  // Emblema "Líderes Singulares AL 25/26" no canto superior direito —
+  // pequeno e nítido, como um selo de identidade da gestão.
   ctx.save()
-  ctx.globalAlpha = 0.32
-  const emblemaTamanho = 980
-  const emblemaX = (W - emblemaTamanho) / 2
-  const emblemaY = (H - emblemaTamanho) / 2
+  ctx.globalAlpha = 0.95
+  const emblemaTamanho = 240
+  const emblemaMargem = 56
+  const emblemaX = W - emblemaTamanho - emblemaMargem
+  const emblemaY = emblemaMargem
   ctx.drawImage(emblema, emblemaX, emblemaY, emblemaTamanho, emblemaTamanho)
   ctx.restore()
 
