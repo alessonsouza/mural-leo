@@ -121,6 +121,28 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 56px 40px 120px;
+  /* Permite posicionar a marca-d'água do logo atrás da grade. */
+  position: relative;
+  isolation: isolate;
+}
+
+/* Logo do LEO Clube como marca-d'água gigante no fundo da área do mural.
+   Fica atrás dos cards (z-index negativo) e bem suave (low opacity) para não
+   competir com o conteúdo. Em telas grandes, ocupa boa parte da viewport;
+   em telas pequenas, encolhe proporcionalmente. */
+.conteudo::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1100px, 92vw);
+  aspect-ratio: 1 / 1;
+  background: url('/logo-leo.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* A grade de cards: 4 imagens por fileira em telas largas, com quebras
@@ -129,6 +151,9 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 32px;
+  /* Garante que a grade fique sobre a marca-d'água, e não atrás dela. */
+  position: relative;
+  z-index: 1;
 }
 
 /* ============================================================================
