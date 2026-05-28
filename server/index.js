@@ -13,7 +13,7 @@
 import express from 'express';
 import multer from 'multer';
 import { Readable } from 'node:stream';
-import { query } from './db.js';
+import { aplicarSchema, query } from './db.js';
 import { enviarImagem } from './r2.js';
 
 // Prefixo público do R2 — usado para validar a rota de proxy de imagens.
@@ -245,6 +245,16 @@ app.use((erro, _req, res, _next) => {
 });
 
 // --- Inicia o servidor ------------------------------------------------------
+// Antes de aceitar requisições, aplica o schema (cria a tabela "memorias" se
+// ainda não existir). Se isso falhar, encerra o processo para o orquestrador
+// reiniciar — não vale a pena subir um servidor sem banco utilizável.
+try {
+  await aplicarSchema();
+} catch (erro) {
+  console.error('Falha ao aplicar o schema do banco:', erro);
+  process.exit(1);
+}
+
 app.listen(PORTA, () => {
   console.log(`API do mural rodando na porta ${PORTA}`);
 });

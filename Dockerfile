@@ -49,6 +49,9 @@ WORKDIR /app
 COPY --from=backend /api/node_modules ./server/node_modules
 COPY server/index.js server/db.js server/r2.js server/package.json ./server/
 
+# Schema do banco — aplicado automaticamente pelo backend no primeiro start.
+COPY db/init.sql ./db/init.sql
+
 # Frontend pronto, servido pelo Caddy a partir de /srv.
 COPY --from=frontend /app/dist /srv
 
