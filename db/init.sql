@@ -25,3 +25,7 @@ CREATE TABLE IF NOT EXISTS memorias (
 
 -- Índice para acelerar a listagem do mural (memórias mais recentes primeiro).
 CREATE INDEX IF NOT EXISTS idx_memorias_criado_em ON memorias (criado_em DESC);
+
+-- Contador de curtidas. Como o app não tem login, o "quem curtiu" é controlado
+-- pelo navegador via localStorage; o banco guarda só o total.
+ALTER TABLE memorias ADD COLUMN IF NOT EXISTS curtidas INTEGER NOT NULL DEFAULT 0;

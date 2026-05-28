@@ -9,4 +9,5 @@ export interface Memoria {
   relato: string // por que a foto é importante
   imagem_url: string // endereço público da foto
   criado_em: string // data/hora da publicação (formato ISO)
+  curtidas: number // total de curtidas que a memória recebeu
 }

@@ -280,8 +280,54 @@ body {
   border-top: 1px solid rgba(201, 162, 75, 0.3);
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
+}
+
+/* Botão de curtir com contador. Coração em outline quando não curtido,
+   preenchido em vinho quando curtido. */
+.botao-curtir {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--grafite-suave);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+
+.botao-curtir:hover:not(:disabled) {
+  color: var(--vinho);
+  background: rgba(123, 30, 59, 0.06);
+}
+
+.botao-curtir:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.botao-curtir:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.botao-curtir--ativo {
+  color: var(--vinho);
+}
+
+.botao-curtir-icone {
+  width: 18px;
+  height: 18px;
+}
+
+.botao-curtir-contador {
+  min-width: 14px;
+  text-align: left;
 }
 
 .card-nome {

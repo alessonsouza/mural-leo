@@ -79,3 +79,31 @@ export async function atualizarMemoria(
   }
   return corpo as Memoria
 }
+
+/**
+ * Registra uma curtida na memória. Devolve o novo total de curtidas.
+ */
+export async function curtirMemoria(id: string): Promise<number> {
+  const resposta = await fetch(`${BASE}/memories/${encodeURIComponent(id)}/like`, {
+    method: 'POST',
+  })
+  const corpo = await resposta.json().catch(() => ({}))
+  if (!resposta.ok) {
+    throw new Error(corpo.erro || 'Não foi possível registrar a curtida.')
+  }
+  return corpo.curtidas as number
+}
+
+/**
+ * Remove uma curtida da memória. Devolve o novo total de curtidas.
+ */
+export async function descurtirMemoria(id: string): Promise<number> {
+  const resposta = await fetch(`${BASE}/memories/${encodeURIComponent(id)}/like`, {
+    method: 'DELETE',
+  })
+  const corpo = await resposta.json().catch(() => ({}))
+  if (!resposta.ok) {
+    throw new Error(corpo.erro || 'Não foi possível remover a curtida.')
+  }
+  return corpo.curtidas as number
+}

@@ -3,7 +3,13 @@
 // ============================================================================
 
 import { useState } from 'react'
+import { curtirMemoria, descurtirMemoria } from '../api'
 import type { Memoria } from '../types'
+import {
+  desmarcarCurtida,
+  jaCurtiu,
+  marcarComoCurtida,
+} from '../utils/curtidas'
 import { ModalCompartilhar } from './ModalCompartilhar'
 import { ModalEditarMemoria } from './ModalEditarMemoria'
 import { ModalVisualizarMemoria } from './ModalVisualizarMemoria'
@@ -17,6 +23,43 @@ export function CardMemoria({ memoria, onAtualizada }: Props) {
   const [modalCompartilhar, setModalCompartilhar] = useState(false)
   const [modalEditar, setModalEditar] = useState(false)
   const [modalVisualizar, setModalVisualizar] = useState(false)
+  // Estado local da curtida — começa olhando para o localStorage.
+  const [curtido, setCurtido] = useState(() => jaCurtiu(memoria.id))
+  // Flag para impedir cliques duplos enquanto a requisição está no ar.
+  const [salvandoCurtida, setSalvandoCurtida] = useState(false)
+
+  async function aoAlternarCurtida() {
+    if (salvandoCurtida) return
+    setSalvandoCurtida(true)
+
+    // Atualização otimista: vira o estado e o contador antes da resposta.
+    const eraCurtido = curtido
+    const novoCurtido = !eraCurtido
+    setCurtido(novoCurtido)
+    if (novoCurtido) marcarComoCurtida(memoria.id)
+    else desmarcarCurtida(memoria.id)
+    onAtualizada({
+      ...memoria,
+      curtidas: memoria.curtidas + (novoCurtido ? 1 : -1),
+    })
+
+    try {
+      const totalReal = novoCurtido
+        ? await curtirMemoria(memoria.id)
+        : await descurtirMemoria(memoria.id)
+      // Concilia o contador com o total real vindo do banco (caso outras
+      // pessoas tenham curtido enquanto isso).
+      onAtualizada({ ...memoria, curtidas: totalReal })
+    } catch {
+      // Se falhar, desfaz o estado otimista.
+      setCurtido(eraCurtido)
+      if (eraCurtido) marcarComoCurtida(memoria.id)
+      else desmarcarCurtida(memoria.id)
+      onAtualizada(memoria)
+    } finally {
+      setSalvandoCurtida(false)
+    }
+  }
 
   return (
     <article className="card">
@@ -39,6 +82,31 @@ export function CardMemoria({ memoria, onAtualizada }: Props) {
 
         <footer className="card-rodape">
           <span className="card-nome">{memoria.nome}</span>
+          <button
+            type="button"
+            className={
+              'botao-curtir' + (curtido ? ' botao-curtir--ativo' : '')
+            }
+            onClick={aoAlternarCurtida}
+            disabled={salvandoCurtida}
+            aria-pressed={curtido}
+            aria-label={curtido ? 'Remover curtida' : 'Curtir esta memória'}
+            title={curtido ? 'Você curtiu' : 'Curtir'}
+          >
+            <svg
+              className="botao-curtir-icone"
+              viewBox="0 0 24 24"
+              fill={curtido ? 'currentColor' : 'none'}
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            <span className="botao-curtir-contador">{memoria.curtidas}</span>
+          </button>
         </footer>
 
         <div className="card-acoes">

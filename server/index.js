@@ -100,7 +100,7 @@ app.get('/api/imagem', async (req, res) => {
 app.get('/api/memories', async (_req, res) => {
   try {
     const { rows } = await query(
-      'SELECT id, nome, relato, imagem_url, criado_em FROM memorias ORDER BY criado_em DESC',
+      'SELECT id, nome, relato, imagem_url, criado_em, curtidas FROM memorias ORDER BY criado_em DESC',
     );
     res.json(rows);
   } catch (erro) {
@@ -158,7 +158,7 @@ app.post('/api/memories', upload.single('foto'), async (req, res) => {
     const { rows } = await query(
       `INSERT INTO memorias (nome, relato, imagem_url)
        VALUES ($1, $2, $3)
-       RETURNING id, nome, relato, imagem_url, criado_em`,
+       RETURNING id, nome, relato, imagem_url, criado_em, curtidas`,
       [nome, relato, imagemUrl],
     );
 
@@ -213,7 +213,7 @@ app.patch('/api/memories/:id', async (req, res) => {
        SET nome   = COALESCE($2, nome),
            relato = COALESCE($3, relato)
        WHERE id = $1
-       RETURNING id, nome, relato, imagem_url, criado_em`,
+       RETURNING id, nome, relato, imagem_url, criado_em, curtidas`,
       [id, nome, relato],
     );
 
@@ -225,6 +225,55 @@ app.patch('/api/memories/:id', async (req, res) => {
   } catch (erro) {
     console.error('Erro ao atualizar memória:', erro);
     res.status(500).json({ erro: 'Não foi possível atualizar a memória.' });
+  }
+});
+
+// ----------------------------------------------------------------------------
+//  POST /api/memories/:id/like
+//  DELETE /api/memories/:id/like
+//  ----------------------------------------------------------------------------
+//  Incrementa ou decrementa o contador de curtidas. Quem realmente está
+//  curtindo é controlado pelo navegador via localStorage — o backend é
+//  basicamente um contador. Por isso essas rotas são abertas e idempotentes
+//  do ponto de vista do banco (não dá pra ficar negativo).
+// ----------------------------------------------------------------------------
+app.post('/api/memories/:id/like', async (req, res) => {
+  try {
+    const { rows } = await query(
+      `UPDATE memorias
+       SET curtidas = curtidas + 1
+       WHERE id = $1
+       RETURNING curtidas`,
+      [req.params.id],
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ erro: 'Memória não encontrada.' });
+    }
+    res.json({ curtidas: rows[0].curtidas });
+  } catch (erro) {
+    console.error('Erro ao curtir memória:', erro);
+    res.status(500).json({ erro: 'Não foi possível registrar a curtida.' });
+  }
+});
+
+app.delete('/api/memories/:id/like', async (req, res) => {
+  try {
+    // GREATEST evita que o contador fique negativo se houver descurtidas a mais
+    // do que curtidas (cenário só possível por chamadas manuais à API).
+    const { rows } = await query(
+      `UPDATE memorias
+       SET curtidas = GREATEST(curtidas - 1, 0)
+       WHERE id = $1
+       RETURNING curtidas`,
+      [req.params.id],
+    );
+    if (rows.length === 0) {
+      return res.status(404).json({ erro: 'Memória não encontrada.' });
+    }
+    res.json({ curtidas: rows[0].curtidas });
+  } catch (erro) {
+    console.error('Erro ao remover curtida:', erro);
+    res.status(500).json({ erro: 'Não foi possível remover a curtida.' });
   }
 });
 
