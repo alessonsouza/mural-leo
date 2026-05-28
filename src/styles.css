@@ -60,26 +60,35 @@ body {
   text-align: center;
   padding: 64px 24px 72px;
   border-bottom: 4px solid var(--dourado);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Emblema "Líderes Singulares AL 25/26" como marca-d'água gigante atrás do
+   título. Centralizado, com opacidade baixa para se misturar com o gradiente
+   vinho sem competir com o texto. */
+.cabecalho::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(820px, 90vw);
+  aspect-ratio: 1 / 1;
+  background: url('/logo-al-25-26.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .cabecalho-conteudo {
   max-width: 720px;
   margin: 0 auto;
-}
-
-/* Emblema da Assessoria Leoística "Líderes Singulares 25/26", no topo do hero. */
-.cabecalho-emblema {
-  display: block;
-  width: clamp(180px, 22vw, 260px);
-  height: auto;
-  margin: 0 auto 28px;
-  /* Halo claro por trás para destacar a arte sobre o fundo vinho do hero. */
-  background: rgba(251, 246, 239, 0.96);
-  border-radius: 50%;
-  padding: 12px;
-  box-shadow:
-    0 0 0 1px rgba(228, 199, 122, 0.4),
-    0 18px 38px rgba(0, 0, 0, 0.28);
+  /* Mantém o texto sobre a marca-d'água. */
+  position: relative;
+  z-index: 1;
 }
 
 /* Selo "Clube LEO" acima do título. */

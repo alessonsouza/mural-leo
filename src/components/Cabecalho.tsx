@@ -6,13 +6,6 @@ export function Cabecalho() {
   return (
     <header className="cabecalho">
       <div className="cabecalho-conteudo">
-        {/* Emblema da Assessoria Leoística 25/26: "Líderes Singulares". */}
-        <img
-          className="cabecalho-emblema"
-          src="/logo-al-25-26.png"
-          alt="Líderes Singulares — AL 25/26"
-        />
-
         {/* Pequeno selo decorativo acima do título. */}
         <span className="cabecalho-selo">LEO Clube Ômega Pinhalzinho</span>
 
