@@ -6,6 +6,7 @@ import { useState } from 'react'
 import type { Memoria } from '../types'
 import { ModalCompartilhar } from './ModalCompartilhar'
 import { ModalEditarMemoria } from './ModalEditarMemoria'
+import { ModalVisualizarMemoria } from './ModalVisualizarMemoria'
 
 interface Props {
   memoria: Memoria
@@ -15,17 +16,23 @@ interface Props {
 export function CardMemoria({ memoria, onAtualizada }: Props) {
   const [modalCompartilhar, setModalCompartilhar] = useState(false)
   const [modalEditar, setModalEditar] = useState(false)
+  const [modalVisualizar, setModalVisualizar] = useState(false)
 
   return (
     <article className="card">
-      <div className="card-moldura">
+      <button
+        type="button"
+        className="card-moldura card-moldura--clicavel"
+        onClick={() => setModalVisualizar(true)}
+        aria-label={`Ver a memória de ${memoria.nome} em tamanho maior`}
+      >
         <img
           className="card-foto"
           src={memoria.imagem_url}
           alt={`Memória compartilhada por ${memoria.nome}`}
           loading="lazy"
         />
-      </div>
+      </button>
 
       <div className="card-corpo">
         <p className="card-relato">{memoria.relato}</p>
@@ -98,6 +105,13 @@ export function CardMemoria({ memoria, onAtualizada }: Props) {
             onAtualizada(atualizada)
             setModalEditar(false)
           }}
+        />
+      )}
+
+      {modalVisualizar && (
+        <ModalVisualizarMemoria
+          memoria={memoria}
+          onFechar={() => setModalVisualizar(false)}
         />
       )}
     </article>

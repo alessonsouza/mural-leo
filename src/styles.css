@@ -218,6 +218,27 @@ body {
   padding: 10px;
 }
 
+/* Variante: a moldura é um botão que abre a memória em tela cheia. Reseta o
+   visual padrão de <button> e adiciona um leve feedback ao passar o mouse. */
+.card-moldura--clicavel {
+  display: block;
+  width: 100%;
+  border: none;
+  font: inherit;
+  text-align: inherit;
+  cursor: zoom-in;
+  transition: filter 0.18s ease;
+}
+
+.card-moldura--clicavel:hover {
+  filter: brightness(1.04);
+}
+
+.card-moldura--clicavel:focus-visible {
+  outline: 3px solid var(--dourado);
+  outline-offset: 4px;
+}
+
 .card-foto {
   display: block;
   width: 100%;
@@ -490,6 +511,106 @@ body {
 /* ============================================================================
    Modal "Adicionar memória"
    ========================================================================== */
+/* ============================================================================
+   Lightbox — visualizador da memória em tela cheia
+   ========================================================================== */
+.lightbox-fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(46, 17, 32, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  z-index: 200;
+  overflow-y: auto;
+}
+
+.lightbox-fechar {
+  position: fixed;
+  top: 22px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--marfim);
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.lightbox-fechar:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.lightbox-painel {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.lightbox-foto-area {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-foto {
+  display: block;
+  max-width: 100%;
+  /* A foto pode ocupar a maior parte da viewport sem espremer o texto abaixo. */
+  max-height: 78vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  background: var(--marfim);
+}
+
+.lightbox-texto {
+  text-align: center;
+  color: var(--marfim);
+  max-width: 720px;
+}
+
+.lightbox-relato {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 20px;
+  line-height: 1.5;
+  margin: 0 0 14px;
+  white-space: pre-wrap;
+}
+
+.lightbox-autor {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--dourado-claro);
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .lightbox-foto {
+    max-height: 64vh;
+  }
+
+  .lightbox-relato {
+    font-size: 18px;
+  }
+}
+
 .modal-fundo {
   position: fixed;
   inset: 0;
