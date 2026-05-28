@@ -1,8 +1,21 @@
-# Arquivos que NÃO devem entrar na imagem Docker do frontend.
+# Arquivos que NÃO devem entrar na imagem Docker.
+# A imagem é all-in-one (Caddy + API Node + frontend), então o contexto precisa
+# incluir o código do frontend (raiz), do backend (server/) e o schema (db/).
+# Aqui ignoramos só o que é gerado ou sensível.
+
+# Dependências reinstaladas dentro de cada estágio do build.
 node_modules
+server/node_modules
+
+# Saída de build do frontend (a etapa "frontend" gera dentro do contêiner).
 dist
-server
-db
+
+# Logs e variáveis sensíveis.
+npm-debug.log
 .env
+
+# Histórico Git e arquivos de IDE — desnecessários no contêiner.
 .git
-*.md
+.gitignore
+.vscode
+.idea

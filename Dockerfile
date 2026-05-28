@@ -22,8 +22,12 @@
 # --- Etapa 1: build do frontend (React + Vite) -----------------------------
 FROM node:22-alpine AS frontend
 WORKDIR /app
+# Força "development" só durante a instalação para garantir que devDependencies
+# (vite, typescript, etc.) sejam instaladas mesmo se o orquestrador passar
+# NODE_ENV=production no build (caso da Coolify por padrão).
+ENV NODE_ENV=development
 COPY package*.json ./
-RUN npm install
+RUN npm install --include=dev
 COPY . .
 RUN npm run build
 
