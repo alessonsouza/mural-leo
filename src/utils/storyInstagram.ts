@@ -149,15 +149,12 @@ export async function gerarStoryInstagram(memoria: Memoria): Promise<Blob> {
   }
 
   // Emblema "Líderes Singulares AL 25/26" no canto superior direito —
-  // pequeno e nítido, como um selo de identidade da gestão.
-  ctx.save()
-  ctx.globalAlpha = 0.9
+  // pequeno e cheio (100% visível), como um selo de identidade da gestão.
   const emblemaTamanho = 240
   const emblemaMargem = 56
   const emblemaX = W - emblemaTamanho - emblemaMargem
   const emblemaY = emblemaMargem
   ctx.drawImage(emblema, emblemaX, emblemaY, emblemaTamanho, emblemaTamanho)
-  ctx.restore()
 
   // --- Cabeçalho: selo + título da proposta ------------------------------
   let y = 110
