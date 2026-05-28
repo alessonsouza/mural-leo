@@ -121,9 +121,12 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 56px 40px 120px;
-  /* Permite posicionar a marca-d'água do logo atrás da grade. */
+  /* Permite posicionar a marca-d'água do logo atrás da grade.
+     overflow: hidden impede que o logo vaze para o rodapé/cabeçalho quando
+     a área dos cards é mais curta que o logo. */
   position: relative;
   isolation: isolate;
+  overflow: hidden;
 }
 
 /* Logo do LEO Clube como marca-d'água gigante no fundo da área do mural.
