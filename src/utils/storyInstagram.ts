@@ -33,6 +33,18 @@ function carregarImagem(url: string): Promise<HTMLImageElement> {
   })
 }
 
+// Carrega uma imagem servida pela própria origem do site (assets em /public/).
+// Não precisa de proxy — o canvas aceita imagens de mesma origem direto.
+function carregarImagemLocal(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => resolve(img)
+    img.onerror = () => reject(new Error(`Não foi possível carregar ${url}.`))
+    img.src = url
+  })
+}
+
 // Garante que as fontes do site (Playfair e Inter) estejam prontas no canvas.
 async function aguardarFontes(): Promise<void> {
   if (!document.fonts) return
@@ -109,19 +121,12 @@ function quebrarTexto(
   return linhas
 }
 
-function formatarData(dataISO: string): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date(dataISO))
-}
-
 export async function gerarStoryInstagram(memoria: Memoria): Promise<Blob> {
-  const [imagem] = await Promise.all([
+  const [imagem, emblema] = await Promise.all([
     carregarImagem(memoria.imagem_url),
+    carregarImagemLocal('/logo-al-25-26.png'),
     aguardarFontes(),
-  ])
+  ]) as [HTMLImageElement, HTMLImageElement, void]
 
   const canvas = document.createElement('canvas')
   canvas.width = W
@@ -142,6 +147,17 @@ export async function gerarStoryInstagram(memoria: Memoria): Promise<Blob> {
       ctx.fillRect(x, y, 1.5, 1.5)
     }
   }
+
+  // Emblema "Líderes Singulares AL 25/26" como marca-d'água atrás de tudo.
+  // Centralizado, ocupando ~90% da largura, com opacidade média para se
+  // misturar com o gradiente vinho sem competir com o conteúdo principal.
+  ctx.save()
+  ctx.globalAlpha = 0.32
+  const emblemaTamanho = 980
+  const emblemaX = (W - emblemaTamanho) / 2
+  const emblemaY = (H - emblemaTamanho) / 2
+  ctx.drawImage(emblema, emblemaX, emblemaY, emblemaTamanho, emblemaTamanho)
+  ctx.restore()
 
   // --- Cabeçalho: selo + título da proposta ------------------------------
   let y = 110
@@ -249,12 +265,7 @@ export async function gerarStoryInstagram(memoria: Memoria): Promise<Blob> {
     y += linhaH
   }
 
-  // --- Rodapé: data + faixa dourada -------------------------------------
-  ctx.fillStyle = DOURADO_CLARO
-  ctx.font = '500 24px "Inter", sans-serif'
-  ctx.textAlign = 'center'
-  ctx.fillText(formatarData(memoria.criado_em), W / 2, H - 96)
-
+  // --- Rodapé: só a faixa dourada decorativa -----------------------------
   ctx.fillStyle = DOURADO
   ctx.fillRect(0, H - 10, W, 10)
 
