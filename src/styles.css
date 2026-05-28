@@ -78,7 +78,7 @@ body {
   aspect-ratio: 1 / 1;
   background: url('/logo-al-25-26.png') no-repeat center center;
   background-size: contain;
-  opacity: 0.75;
+  opacity: 1;
   pointer-events: none;
   z-index: 0;
 }
@@ -89,7 +89,7 @@ body {
     right: 50%;
     transform: translate(50%, -50%);
     width: 78vw;
-    opacity: 0.35;
+    opacity: 0.55;
   }
 }
 
