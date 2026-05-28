@@ -1,0 +1,4 @@
+# Arquivos que NÃO devem entrar na imagem Docker do backend.
+node_modules
+npm-debug.log
+.env

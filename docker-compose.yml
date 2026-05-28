@@ -1,0 +1,75 @@
+# ============================================================================
+#  docker-compose — orquestra os 3 contêineres do projeto
+# ----------------------------------------------------------------------------
+#    db   -> banco de dados PostgreSQL
+#    api  -> backend Node.js (a API)
+#    web  -> site React servido pelo Caddy (HTTPS automático)
+#
+#  As senhas e chaves vêm do arquivo ".env" (na mesma pasta deste arquivo).
+#  Suba tudo com:   docker compose up -d --build
+# ============================================================================
+
+services:
+  # --- Banco de dados -------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      # Expõe o banco APENAS para o próprio computador/servidor (127.0.0.1),
+      # nunca para a internet. Útil para o desenvolvimento local do backend.
+      - '127.0.0.1:5432:5432'
+    volumes:
+      # Guarda os dados do banco de forma permanente (sobrevive a reinícios).
+      - pgdata:/var/lib/postgresql/data
+      # Cria a tabela "memorias" na primeira vez que o banco sobe.
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      # Só considera o banco "pronto" quando ele aceita conexões.
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --- Backend (API) --------------------------------------------------------
+  api:
+    build: ./server
+    restart: unless-stopped
+    environment:
+      # Endereço de conexão com o banco (o host "db" é o contêiner acima).
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      # Credenciais do Cloudflare R2 (armazenamento das fotos).
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_BUCKET: ${R2_BUCKET}
+      R2_PUBLIC_URL: ${R2_PUBLIC_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --- Site (frontend + servidor web) --------------------------------------
+  web:
+    build: .
+    restart: unless-stopped
+    environment:
+      # Endereço público do site (definido no .env).
+      DOMINIO: ${DOMINIO}
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      - api
+    volumes:
+      # Guarda os certificados HTTPS gerados pelo Caddy.
+      - caddy_data:/data
+      - caddy_config:/config
+
+# Volumes nomeados — armazenamento permanente gerenciado pelo Docker.
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

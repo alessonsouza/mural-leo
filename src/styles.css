@@ -1,0 +1,813 @@
+/* ============================================================================
+   Estilos do site — "Relatos de Afeto: Memórias do Servir"
+   ----------------------------------------------------------------------------
+   Identidade visual do movimento LEO: bordô/vinho e dourado, tom acolhedor,
+   títulos em fonte serifada elegante e textos em fonte limpa.
+   ========================================================================== */
+
+/* --- Paleta de cores e fontes (variáveis reutilizáveis) ------------------- */
+:root {
+  --vinho: #7b1e3b;
+  --vinho-escuro: #5a1129;
+  --vinho-claro: #9d3754;
+  --dourado: #c9a24b;
+  --dourado-claro: #e4c77a;
+  --marfim: #fbf6ef;
+  --fundo: #f3ebdd; /* fundo geral da página, creme suave */
+  --papel: #ffffff; /* fundo dos cards */
+  --grafite: #2e2a28; /* texto principal */
+  --grafite-suave: #7a716a; /* textos secundários */
+  --sombra-suave: 0 6px 20px rgba(90, 17, 41, 0.08);
+  --sombra-card: 0 10px 30px rgba(90, 17, 41, 0.12);
+
+  --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* --- Base ---------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--grafite);
+  background-color: var(--fundo);
+  /* Textura sutil de papel, feita com pontos dourados quase transparentes. */
+  background-image: radial-gradient(
+    rgba(201, 162, 75, 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pagina {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================================
+   Cabeçalho
+   ========================================================================== */
+.cabecalho {
+  background: linear-gradient(160deg, var(--vinho) 0%, var(--vinho-escuro) 100%);
+  color: var(--marfim);
+  text-align: center;
+  padding: 64px 24px 72px;
+  border-bottom: 4px solid var(--dourado);
+}
+
+.cabecalho-conteudo {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Selo "Clube LEO" acima do título. */
+.cabecalho-selo {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dourado-claro);
+  border: 1px solid rgba(228, 199, 122, 0.5);
+  border-radius: 999px;
+  padding: 6px 18px;
+  margin-bottom: 22px;
+}
+
+.cabecalho-titulo {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 52px;
+  line-height: 1.1;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* "Memórias do Servir" — segunda linha do título, em itálico dourado. */
+.cabecalho-subtitulo-serif {
+  font-style: italic;
+  font-weight: 500;
+  font-size: 30px;
+  color: var(--dourado-claro);
+}
+
+.cabecalho-subtitulo {
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--dourado-claro);
+}
+
+.cabecalho-descricao {
+  margin: 22px auto 0;
+  max-width: 540px;
+  font-size: 17px;
+  color: rgba(251, 246, 239, 0.85);
+}
+
+/* ============================================================================
+   Conteúdo / Mural
+   ========================================================================== */
+.conteudo {
+  flex: 1;
+  width: 100%;
+  margin: 0 auto;
+  padding: 56px 40px 120px;
+}
+
+/* A grade de cards: 4 imagens por fileira em telas largas, com quebras
+   responsivas para tablet e celular mais abaixo. */
+.grade {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+/* ============================================================================
+   Card de memória
+   ========================================================================== */
+.card {
+  background: var(--papel);
+  border-radius: 14px;
+  box-shadow: var(--sombra-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(201, 162, 75, 0.25);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 38px rgba(90, 17, 41, 0.18);
+}
+
+/* Moldura da foto — uma borda clara que lembra um quadro de fotos. */
+.card-moldura {
+  background: var(--marfim);
+  padding: 10px;
+}
+
+.card-foto {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+  background: #e9e0d2;
+}
+
+.card-corpo {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+/* O relato. Aspas decorativas em dourado antes do texto. */
+.card-relato {
+  margin: 0;
+  color: var(--grafite);
+  font-size: 16px;
+  white-space: pre-wrap; /* respeita quebras de linha digitadas pelo autor */
+}
+
+.card-relato::before {
+  content: '\201C'; /* aspas de abertura */
+  font-family: var(--serif);
+  font-size: 38px;
+  line-height: 0;
+  color: var(--dourado);
+  margin-right: 4px;
+  vertical-align: -14px;
+}
+
+.card-rodape {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(201, 162, 75, 0.3);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.card-nome {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--vinho);
+}
+
+.card-data {
+  font-size: 13px;
+  color: var(--grafite-suave);
+  white-space: nowrap;
+}
+
+/* Linha de ações abaixo da assinatura (ex.: botão "Compartilhar no story"). */
+.card-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.botao-compartilhar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vinho);
+  background: rgba(201, 162, 75, 0.12);
+  border: 1px solid rgba(201, 162, 75, 0.5);
+  border-radius: 999px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.botao-compartilhar:hover:not(:disabled) {
+  background: var(--vinho);
+  color: var(--marfim);
+  border-color: var(--vinho);
+}
+
+.botao-compartilhar:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.botao-compartilhar-icone {
+  width: 16px;
+  height: 16px;
+}
+
+.card-erro-compartilhar {
+  margin: 0;
+  font-size: 13px;
+  color: var(--vinho);
+}
+
+/* Linha de ações secundárias (editar / apagar) abaixo do botão principal. */
+.card-acoes-secundarias {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.botao-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grafite-suave);
+  background: transparent;
+  border: 1px solid rgba(46, 42, 40, 0.18);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.botao-icone svg {
+  width: 16px;
+  height: 16px;
+}
+
+.botao-icone:hover:not(:disabled) {
+  color: var(--vinho);
+  border-color: rgba(123, 30, 59, 0.4);
+  background: rgba(123, 30, 59, 0.05);
+}
+
+.botao-icone:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* ============================================================================
+   Avisos (carregando / erro) e estado vazio
+   ========================================================================== */
+.aviso {
+  text-align: center;
+  color: var(--grafite-suave);
+  padding: 60px 20px;
+  font-size: 17px;
+}
+
+.aviso-erro {
+  color: var(--vinho);
+  font-weight: 500;
+}
+
+.vazio {
+  text-align: center;
+  background: var(--papel);
+  border: 1px dashed rgba(201, 162, 75, 0.6);
+  border-radius: 16px;
+  padding: 64px 28px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.vazio-titulo {
+  font-family: var(--serif);
+  font-size: 26px;
+  color: var(--vinho);
+  margin: 0 0 8px;
+}
+
+.vazio-texto {
+  margin: 0 0 28px;
+  color: var(--grafite-suave);
+}
+
+/* ============================================================================
+   Botões
+   ========================================================================== */
+.botao-primario {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--marfim);
+  background: var(--vinho);
+  border: none;
+  border-radius: 999px;
+  padding: 13px 28px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.botao-primario:hover:not(:disabled) {
+  background: var(--vinho-escuro);
+}
+
+.botao-primario:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.botao-secundario {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--vinho);
+  background: transparent;
+  border: 1px solid rgba(123, 30, 59, 0.4);
+  border-radius: 999px;
+  padding: 13px 24px;
+  cursor: pointer;
+}
+
+.botao-secundario:hover:not(:disabled) {
+  background: rgba(123, 30, 59, 0.06);
+}
+
+/* Botão flutuante fixo no canto inferior direito. */
+.botao-flutuante {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--vinho-escuro);
+  background: var(--dourado);
+  border: 2px solid var(--dourado-claro);
+  border-radius: 999px;
+  padding: 14px 24px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(90, 17, 41, 0.3);
+  transition: transform 0.12s ease, background 0.15s ease;
+  z-index: 50;
+}
+
+.botao-flutuante:hover {
+  background: var(--dourado-claro);
+  transform: translateY(-2px);
+}
+
+.botao-flutuante-mais {
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+/* ============================================================================
+   Rodapé do site
+   ========================================================================== */
+.rodape-site {
+  text-align: center;
+  padding: 28px 20px;
+  background: var(--vinho-escuro);
+  color: rgba(251, 246, 239, 0.8);
+  font-size: 14px;
+}
+
+/* ============================================================================
+   Modal "Adicionar memória"
+   ========================================================================== */
+.modal-fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(46, 42, 40, 0.62);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 16px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.modal-painel {
+  position: relative;
+  background: var(--papel);
+  width: 100%;
+  max-width: 540px;
+  border-radius: 16px;
+  border-top: 5px solid var(--dourado);
+  padding: 36px 32px 32px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+/* Variante do modal usada na pré-visualização do story (precisa caber a imagem
+   1080x1920 numa escala confortável). */
+.modal-painel--compartilhar {
+  max-width: 460px;
+}
+
+/* Caixa que exibe a pré-visualização do story em proporção 9:16. */
+.previa-story {
+  margin-top: 22px;
+  margin-bottom: 22px;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  background: var(--marfim);
+  border: 1px solid rgba(201, 162, 75, 0.4);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.previa-story-imagem {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.previa-story-carregando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: var(--grafite-suave);
+  font-size: 15px;
+  text-align: center;
+  padding: 24px;
+}
+
+.previa-story-spinner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid rgba(123, 30, 59, 0.18);
+  border-top-color: var(--vinho);
+  animation: previa-spin 0.9s linear infinite;
+}
+
+@keyframes previa-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.previa-story-erro {
+  margin: 0;
+  padding: 24px;
+  color: var(--vinho);
+  font-size: 15px;
+  text-align: center;
+}
+
+.modal-fechar {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--grafite-suave);
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.modal-fechar:hover {
+  background: rgba(123, 30, 59, 0.08);
+  color: var(--vinho);
+}
+
+.modal-titulo {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 28px;
+  color: var(--vinho);
+  margin: 0 0 6px;
+}
+
+.modal-instrucao {
+  margin: 0 0 24px;
+  color: var(--grafite-suave);
+  font-size: 15px;
+}
+
+/* --- Formulário ---------------------------------------------------------- */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.campo-rotulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vinho);
+}
+
+.campo-entrada,
+.campo-area {
+  font-family: var(--sans);
+  font-size: 16px;
+  color: var(--grafite);
+  background: var(--marfim);
+  border: 1px solid rgba(201, 162, 75, 0.5);
+  border-radius: 10px;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+.campo-area {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.campo-entrada:focus,
+.campo-area:focus {
+  outline: 2px solid var(--dourado);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+/* Campo com prefixo fixo (ex.: "CLEO" antes do nome). O selo do prefixo fica
+   sobreposto à entrada, com um padding extra à esquerda para o texto não passar
+   por baixo dele. */
+.campo-prefixado {
+  position: relative;
+}
+
+.campo-prefixo {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--vinho);
+  color: var(--marfim);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+.campo-entrada--prefixada {
+  padding-left: 68px;
+}
+
+/* --- Área de upload da foto --------------------------------------------- */
+/* Caixa clicável (e que aceita arrastar e soltar) no lugar do feio campo
+   de arquivo padrão do navegador. */
+.zona-upload {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 168px;
+  padding: 24px;
+  background: var(--marfim);
+  border: 2px dashed rgba(201, 162, 75, 0.7);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.zona-upload:hover {
+  border-color: var(--dourado);
+  background: #fdfaf4;
+}
+
+/* Destaque quando há uma imagem sendo arrastada sobre a área. */
+.zona-upload--arrastando {
+  border-style: solid;
+  border-color: var(--vinho);
+  background: rgba(201, 162, 75, 0.14);
+}
+
+/* Realça a área quando ela recebe foco pelo teclado (acessibilidade). */
+.zona-upload:focus-within {
+  outline: 2px solid var(--dourado);
+  outline-offset: 2px;
+}
+
+/* O input de arquivo fica invisível, mas continua acessível. */
+.zona-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* Conteúdo exibido enquanto nenhuma foto foi escolhida. */
+.zona-upload-vazia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.zona-upload-icone {
+  width: 44px;
+  height: 44px;
+  color: var(--dourado);
+  margin-bottom: 6px;
+}
+
+.zona-upload-titulo {
+  font-weight: 600;
+  color: var(--vinho);
+}
+
+.zona-upload-dica {
+  font-size: 13px;
+  color: var(--grafite-suave);
+}
+
+/* Quando já existe uma foto: a área vira a moldura da pré-visualização. */
+.zona-upload--com-foto {
+  min-height: 0;
+  padding: 0;
+  border-style: solid;
+  border-color: rgba(201, 162, 75, 0.55);
+  overflow: hidden;
+}
+
+.zona-upload-previa {
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  object-fit: cover;
+}
+
+/* Faixa "Trocar foto" que aparece ao passar o mouse sobre a pré-visualização. */
+.zona-upload-trocar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--marfim);
+  background: linear-gradient(transparent, rgba(46, 42, 40, 0.8));
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.zona-upload--com-foto:hover .zona-upload-trocar,
+.zona-upload--com-foto:focus-within .zona-upload-trocar {
+  opacity: 1;
+}
+
+.formulario-erro {
+  margin: 0;
+  color: #b00020;
+  background: rgba(176, 0, 32, 0.08);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.formulario-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+/* ============================================================================
+   Ajustes para tablets (largura intermediária): 2 colunas no lugar de 4.
+   ========================================================================== */
+@media (max-width: 960px) {
+  .grade {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+
+  .conteudo {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+}
+
+/* ============================================================================
+   Ajustes para telas pequenas (celular)
+   ========================================================================== */
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+  }
+
+  .cabecalho {
+    padding: 44px 20px 52px;
+  }
+
+  .cabecalho-titulo {
+    font-size: 36px;
+  }
+
+  .cabecalho-subtitulo-serif {
+    font-size: 22px;
+  }
+
+  .conteudo {
+    padding: 36px 18px 110px;
+  }
+
+  .grade {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .modal-painel {
+    padding: 30px 22px 26px;
+  }
+
+  /* No celular, o botão flutuante mostra só o "+", para ocupar menos espaço. */
+  .botao-flutuante {
+    right: 18px;
+    bottom: 18px;
+    padding: 16px;
+    font-size: 0; /* esconde o texto */
+  }
+
+  .botao-flutuante-mais {
+    font-size: 26px;
+  }
+
+  .formulario-acoes {
+    flex-direction: column-reverse;
+  }
+
+  .formulario-acoes .botao-primario,
+  .formulario-acoes .botao-secundario {
+    width: 100%;
+  }
+}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Ícone do site: círculo bordô com um coração dourado (afeto + clube LEO). -->
+  <circle cx="32" cy="32" r="32" fill="#7B1E3B" />
+  <path
+    d="M32 46s-13-7.5-13-17a8 8 0 0 1 13-6.2A8 8 0 0 1 45 29c0 9.5-13 17-13 17z"
+    fill="#E4C77A"
+  />
+</svg>

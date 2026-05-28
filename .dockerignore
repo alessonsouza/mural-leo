@@ -1,0 +1,8 @@
+# Arquivos que NÃO devem entrar na imagem Docker do frontend.
+node_modules
+dist
+server
+db
+.env
+.git
+*.md

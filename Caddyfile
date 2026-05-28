@@ -1,0 +1,27 @@
+# ============================================================================
+#  Caddyfile — configuração do servidor web (Caddy)
+# ----------------------------------------------------------------------------
+#  O Caddy faz duas coisas:
+#    1. Entrega o site (os arquivos do React) para quem acessa o link.
+#    2. Encaminha tudo que começa com "/api" para a API Node.js rodando no
+#       mesmo contêiner, em localhost:3001.
+#
+#  O endereço do site vem da variável DOMINIO:
+#    · Com um domínio (ex.: mural.seuclube.org.br) o Caddy gera o HTTPS sozinho.
+#    · Sem domínio, use ":80" para acessar pelo IP do servidor (apenas HTTP).
+# ============================================================================
+
+{$DOMINIO} {
+	# Chamadas da API vão para o Node rodando no mesmo contêiner.
+	handle /api/* {
+		reverse_proxy localhost:3001
+	}
+
+	# Qualquer outro endereço entrega o site React.
+	handle {
+		root * /srv
+		# Como é um site de página única, todo caminho cai no index.html.
+		try_files {path} /index.html
+		file_server
+	}
+}
