@@ -41,19 +41,30 @@ export function EditorRecorteFoto({ arquivo, onConcluir, onCancelar }: Props) {
     desX: number
     desY: number
   } | null>(null)
-  const refUrlObjeto = useRef<string | null>(null)
 
   // Carrega a foto escolhida para extrair as dimensões naturais.
   useEffect(() => {
+    // Flag de cancelamento — protege contra o double-mount do StrictMode
+    // (effect roda 2x em dev): o cleanup do primeiro mount revoga a object URL,
+    // o que dispara onerror do <img>; sem essa flag o erro fica grudado mesmo
+    // depois do segundo mount carregar a imagem com sucesso.
+    let cancelado = false
     const url = URL.createObjectURL(arquivo)
-    refUrlObjeto.current = url
     setSrcUrl(url)
+    setErro(null)
     const img = new Image()
-    img.onload = () => setTamanhoImg({ w: img.naturalWidth, h: img.naturalHeight })
-    img.onerror = () => setErro('Não foi possível abrir a imagem para edição.')
+    img.onload = () => {
+      if (cancelado) return
+      setTamanhoImg({ w: img.naturalWidth, h: img.naturalHeight })
+    }
+    img.onerror = () => {
+      if (cancelado) return
+      setErro('Não foi possível abrir a imagem para edição.')
+    }
     img.src = url
     return () => {
-      if (refUrlObjeto.current) URL.revokeObjectURL(refUrlObjeto.current)
+      cancelado = true
+      URL.revokeObjectURL(url)
     }
   }, [arquivo])
 
