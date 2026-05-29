@@ -11,6 +11,7 @@ import type { ChangeEvent, DragEvent, FormEvent } from 'react'
 import imageCompression from 'browser-image-compression'
 import { criarMemoria } from '../api'
 import type { Memoria } from '../types'
+import { EditorRecorteFoto } from './EditorRecorteFoto'
 
 interface Props {
   onFechar: () => void // fecha o modal sem salvar
@@ -27,6 +28,8 @@ export function ModalNovaMemoria({ onFechar, onCriada }: Props) {
   const [erro, setErro] = useState<string | null>(null)
   // Indica se o usuário está arrastando um arquivo sobre a área de upload.
   const [arrastando, setArrastando] = useState(false)
+  // Quando preenchido, o editor de recorte está aberto sobre o formulário.
+  const [arquivoParaEditar, setArquivoParaEditar] = useState<File | null>(null)
 
   // Guarda a URL temporária da pré-visualização para liberá-la depois da memória.
   const urlPreviaRef = useRef<string | null>(null)
@@ -62,7 +65,9 @@ export function ModalNovaMemoria({ onFechar, onCriada }: Props) {
   // Chamado quando o usuário escolhe uma imagem clicando no campo de upload.
   function aoEscolherArquivo(evento: ChangeEvent<HTMLInputElement>) {
     const escolhido = evento.target.files?.[0]
-    if (escolhido) definirArquivo(escolhido)
+    if (escolhido) abrirEditor(escolhido)
+    // Limpa o input para permitir reescolher a MESMA foto depois de cancelar.
+    evento.target.value = ''
   }
 
   // Chamado quando o usuário solta uma imagem arrastada sobre a área.
@@ -75,7 +80,18 @@ export function ModalNovaMemoria({ onFechar, onCriada }: Props) {
       setErro('O arquivo arrastado não é uma imagem.')
       return
     }
-    definirArquivo(escolhido)
+    abrirEditor(escolhido)
+  }
+
+  // Abre o editor de recorte para a foto recém-selecionada.
+  function abrirEditor(escolhido: File) {
+    setErro(null)
+    setArquivoParaEditar(escolhido)
+  }
+
+  // Reabrir o editor para reajustar a foto já escolhida.
+  function reabrirEditor() {
+    if (arquivo) setArquivoParaEditar(arquivo)
   }
 
   // Chamado ao enviar o formulário.
@@ -118,27 +134,43 @@ export function ModalNovaMemoria({ onFechar, onCriada }: Props) {
     <div className="modal-fundo" onClick={onFechar}>
       {/* O painel branco. "stopPropagation" impede que cliques aqui fechem o modal. */}
       <div
-        className="modal-painel"
+        className={
+          'modal-painel' +
+          (arquivoParaEditar ? ' modal-painel--editor' : '')
+        }
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-titulo"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          type="button"
-          className="modal-fechar"
-          onClick={onFechar}
-          aria-label="Fechar"
-        >
-          ×
-        </button>
+        {!arquivoParaEditar && (
+          <button
+            type="button"
+            className="modal-fechar"
+            onClick={onFechar}
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        )}
 
-        <h2 id="modal-titulo" className="modal-titulo">
-          Adicionar memória
-        </h2>
-        <p className="modal-instrucao">
-          Compartilhe uma fotografia e conte por que ela é especial para você.
-        </p>
+        {arquivoParaEditar ? (
+          <EditorRecorteFoto
+            arquivo={arquivoParaEditar}
+            onConcluir={(arquivoCortado) => {
+              setArquivoParaEditar(null)
+              definirArquivo(arquivoCortado)
+            }}
+            onCancelar={() => setArquivoParaEditar(null)}
+          />
+        ) : (
+          <>
+            <h2 id="modal-titulo" className="modal-titulo">
+              Adicionar memória
+            </h2>
+            <p className="modal-instrucao">
+              Compartilhe uma fotografia e conte por que ela é especial para você.
+            </p>
 
         <form className="formulario" onSubmit={aoEnviar}>
           {/* Campo de upload da imagem — área clicável que também aceita
@@ -202,6 +234,15 @@ export function ModalNovaMemoria({ onFechar, onCriada }: Props) {
                 </span>
               )}
             </label>
+            {previa && (
+              <button
+                type="button"
+                className="botao-ajustar"
+                onClick={reabrirEditor}
+              >
+                Ajustar enquadramento
+              </button>
+            )}
           </div>
 
           {/* Campo do nome — com prefixo fixo "CLEO" antes do que o usuário digita. */}
@@ -251,6 +292,8 @@ export function ModalNovaMemoria({ onFechar, onCriada }: Props) {
             </button>
           </div>
         </form>
+          </>
+        )}
       </div>
     </div>
   )

@@ -686,6 +686,87 @@ body {
   max-width: 460px;
 }
 
+/* Variante usada quando o editor de recorte está aberto — precisa de mais
+   largura para acomodar o quadro 4:3 com folga. */
+.modal-painel--editor {
+  max-width: 680px;
+}
+
+/* ----- Editor de recorte da foto (4:3) ----- */
+.editor-recorte {
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin: 20px 0 16px;
+  background: #2e2a28;
+  border-radius: 12px;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+
+.editor-viewport--arrastando {
+  cursor: grabbing;
+}
+
+.editor-imagem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* width / height vêm via inline style (tamanho natural da imagem),
+     transform também (translate(-50%) + pan + scale). */
+  transform-origin: center center;
+  pointer-events: none;
+  max-width: none;
+}
+
+.editor-zoom {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.editor-zoom-rotulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--vinho);
+  min-width: 44px;
+}
+
+.editor-zoom input[type='range'] {
+  flex: 1;
+  accent-color: var(--vinho);
+}
+
+/* Botão discreto para reabrir o editor depois que a foto já foi escolhida. */
+.botao-ajustar {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 6px 14px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vinho);
+  background: rgba(201, 162, 75, 0.12);
+  border: 1px solid rgba(201, 162, 75, 0.45);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.botao-ajustar:hover {
+  background: var(--vinho);
+  color: var(--marfim);
+  border-color: var(--vinho);
+}
+
 /* Caixa que exibe a pré-visualização do story em proporção 9:16. */
 .previa-story {
   margin-top: 22px;
