@@ -25,7 +25,7 @@ const R2_PUBLIC_URL = (process.env.R2_PUBLIC_URL || '').replace(/\/+$/, '');
 const PORTA = process.env.PORT || 3001;
 
 // Limites simples para conter abusos (o site é aberto, sem login).
-const TAMANHO_MAX_IMAGEM = 12 * 1024 * 1024; // 12 MB
+const TAMANHO_MAX_IMAGEM = 18 * 1024 * 1024; // 18 MB
 const TAMANHO_MAX_NOME = 80; // caracteres
 const TAMANHO_MAX_RELATO = 2000; // caracteres
 
@@ -285,7 +285,7 @@ app.use((erro, _req, res, _next) => {
     if (erro.code === 'LIMIT_FILE_SIZE') {
       return res
         .status(400)
-        .json({ erro: 'A imagem é muito grande (limite de 12 MB).' });
+        .json({ erro: 'A imagem é muito grande (limite de 18 MB).' });
     }
     return res.status(400).json({ erro: 'Erro ao processar o arquivo enviado.' });
   }
