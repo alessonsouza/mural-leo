@@ -10,7 +10,10 @@ export default defineConfig({
     // encaminhado para o backend rodando na porta 3001. Assim o frontend e o
     // backend funcionam como se estivessem no mesmo endereço, sem erros de CORS.
     proxy: {
-      '/api': 'http://localhost:3001',
+      // Usa 127.0.0.1 em vez de "localhost" — o Windows resolve "localhost"
+      // para IPv6 ([::1]) primeiro, e nessa pilha o WSL relay pode estar
+      // ocupando a 3001 e devolvendo 404. Forçar IPv4 cai direto no Node.
+      '/api': 'http://127.0.0.1:3001',
     },
   },
 })

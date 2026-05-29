@@ -18,8 +18,9 @@ interface Props {
 }
 
 // Resolução de saída do recorte. browser-image-compression depois comprime.
-const SAIDA_LARGURA = 1200
-const SAIDA_ALTURA = 900
+// 2400x1800 = 4:3 a ~4 MP, suficiente pra fotos detalhadas no mural e no story.
+const SAIDA_LARGURA = 2400
+const SAIDA_ALTURA = 1800
 const ZOOM_MIN = 1
 const ZOOM_MAX = 3
 

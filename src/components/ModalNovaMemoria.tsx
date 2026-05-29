@@ -106,10 +106,12 @@ export function ModalNovaMemoria({ onFechar, onCriada }: Props) {
 
     setEnviando(true)
     try {
-      // Comprime a foto no navegador: no máximo ~1 MB e 1600px de lado maior.
+      // Comprime a foto no navegador: até ~2.5 MB e 2400px de lado maior.
+      // Combinado com o editor (que exporta 2400x1800) preserva resolução boa
+      // pra zoom no lightbox e no template do story.
       const fotoComprimida = await imageCompression(arquivo, {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1600,
+        maxSizeMB: 2.5,
+        maxWidthOrHeight: 2400,
         useWebWorker: true,
       })
 
