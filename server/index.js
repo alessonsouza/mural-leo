@@ -177,7 +177,7 @@ app.post('/api/memories', upload.single('foto'), async (req, res) => {
 //  alterada por esta rota — para trocar a foto, basta apagar e cadastrar de
 //  novo.
 // ----------------------------------------------------------------------------
-app.patch('/api/memories/:id', async (req, res) => {
+app.patch('/api/memories/:id', upload.single('foto'), async (req, res) => {
   try {
     const { id } = req.params;
     const corpo = req.body || {};
@@ -185,8 +185,9 @@ app.patch('/api/memories/:id', async (req, res) => {
       typeof corpo.nome === 'string' ? corpo.nome.trim() : null;
     const relato =
       typeof corpo.relato === 'string' ? corpo.relato.trim() : null;
+    const foto = req.file;
 
-    if (nome === null && relato === null) {
+    if (nome === null && relato === null && !foto) {
       return res
         .status(400)
         .json({ erro: 'Informe ao menos um campo para alterar.' });
@@ -207,14 +208,27 @@ app.patch('/api/memories/:id', async (req, res) => {
         .status(400)
         .json({ erro: `O relato deve ter no máximo ${TAMANHO_MAX_RELATO} caracteres.` });
     }
+    if (foto && !TIPOS_ACEITOS.includes(foto.mimetype)) {
+      return res
+        .status(400)
+        .json({ erro: 'O arquivo enviado não é uma imagem válida (use JPG, PNG, WEBP ou GIF).' });
+    }
+
+    // Se uma foto nova foi enviada, manda pro R2 e troca a URL na memória.
+    // (A foto antiga no R2 fica órfã — overhead de storage é mínimo no R2.)
+    let novaImagemUrl = null;
+    if (foto) {
+      novaImagemUrl = await enviarImagem(foto.buffer, foto.mimetype);
+    }
 
     const { rows } = await query(
       `UPDATE memorias
-       SET nome   = COALESCE($2, nome),
-           relato = COALESCE($3, relato)
+       SET nome       = COALESCE($2, nome),
+           relato     = COALESCE($3, relato),
+           imagem_url = COALESCE($4, imagem_url)
        WHERE id = $1
        RETURNING id, nome, relato, imagem_url, criado_em, curtidas`,
-      [id, nome, relato],
+      [id, nome, relato, novaImagemUrl],
     );
 
     if (rows.length === 0) {

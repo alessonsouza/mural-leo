@@ -58,20 +58,25 @@ export async function criarMemoria(dados: NovaMemoria): Promise<Memoria> {
 export interface AlteracaoMemoria {
   nome?: string
   relato?: string
+  foto?: File // se enviada, substitui a foto antiga
 }
 
 /**
- * Atualiza o nome e/ou o relato de uma memória existente. A foto não é alterada
- * por esta rota.
+ * Atualiza o nome, o relato e/ou a foto de uma memória existente. A requisição
+ * vai em multipart/form-data porque pode incluir um arquivo de imagem.
  */
 export async function atualizarMemoria(
   id: string,
   dados: AlteracaoMemoria,
 ): Promise<Memoria> {
+  const formulario = new FormData()
+  if (dados.nome !== undefined) formulario.append('nome', dados.nome)
+  if (dados.relato !== undefined) formulario.append('relato', dados.relato)
+  if (dados.foto) formulario.append('foto', dados.foto)
+
   const resposta = await fetch(`${BASE}/memories/${encodeURIComponent(id)}`, {
     method: 'PATCH',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(dados),
+    body: formulario,
   })
   const corpo = await resposta.json().catch(() => ({}))
   if (!resposta.ok) {
